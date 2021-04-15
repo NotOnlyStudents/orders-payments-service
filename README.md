@@ -4,8 +4,11 @@
 [![Deploy Staging](https://github.com/NotOnlyStudents/orders-payments-service/actions/workflows/deploy-staging.yml/badge.svg?branch=main)](https://github.com/NotOnlyStudents/orders-payments-service/actions/workflows/deploy-staging.yml)
 
 ## Architecture
+
 <p align="center">
   <img src="docs/images/architecture.png" alt="High-level architecture diagram"/>
 </p>
+
 ## Open API docs
+
 [Read the docs](docs/openApi.md)

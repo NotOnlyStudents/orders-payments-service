@@ -1,33 +1,45 @@
-service: name
+service: addresses-service
 
 frameworkVersion: "2"
 
 provider:
   name: aws
-  runtime: nodejs12.x
   region: eu-west-1
+  runtime: nodejs12.x
+  stage: ${opt:stage, "dev"}
   lambdaHashingVersion: 20201221
+  environment:
+    DYNAMODB_CONFIG_FILE_PATH: configs/${self:provider.stage}-dynamo.yml
+    TO_PAY_ORDERS_TABLE_NAME: ${self:provider.stage}-orders-to-pay
+    PAYED_ORDERS_TABLE_NAME: ${self:provider.stage}-orders-payed
 
 plugins:
   - serverless-webpack
   - serverless-dynamodb-local
   - serverless-dynamodb-seed
   - serverless-offline
+  - serverless-domain-manager
+functions:
+  getOrder:
+    handler: src/endpoints/getOrder.default
+    events:
+      - http:
+          path: orders/{ID}
+          method: get
+          cors: true
+#            integration: lambda
+#            authorizer:
+#              type: COGNITO_USER_POOLS
+#              authorizerId:
+#                Ref: ApiGatewayAuthorizer
 
-resources:
-  Resources:
-    ApiGatewayAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        AuthorizerResultTtlInSeconds: 300
-        IdentitySource: method.request.header.Authorization
-        Name: Cognito
-        RestApiId: # API id, ref
-          Type: COGNITO_USER_POOLS
-        ProviderARNs:
-          -  # Cognito ARN
 
 custom:
+  customDomain:
+    domainName: api.annoiato.net
+    basePath: ${self:provider.stage}
+    stage: ${self:provider.stage}
+    createRoute53Record: true
   dynamodb:
     stages:
       - dev
@@ -39,3 +51,61 @@ custom:
       convertEmptyValues: true
     migration:
       dir: ./offline
+    seed: 
+      test:
+        sources:
+        - table: dev-orders-payed
+          sources: [ offline/seeds/orders.json ]
+resources:
+  Resources:
+#    OrdersToPayTable:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#        TableName: ${self:provider.environment.TO_PAY_ORDERS_TABLE_NAME}
+#        AttributeDefinitions:
+#          - AttributeName: paymentId
+#            AttributeType: S
+#        KeySchema:
+#          - AttributeName: paymentId
+#            KeyType: HASH
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 5
+#          WriteCapacityUnits: 5
+    OrdersPayedTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.PAYED_ORDERS_TABLE_NAME}
+        AttributeDefinitions:
+        - AttributeName: customerId
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+        KeySchema:
+          - AttributeName: id 
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: userIdIndex
+            KeySchema:
+            - AttributeName: customerId
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+        ProvisionedThroughput:
+          ReadCapacityUnits: 3
+          WriteCapacityUnits: 3
+    
+    ApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        AuthorizerResultTtlInSeconds: 300
+        IdentitySource: method.request.header.Authorization
+        Name: ${self:provider.stage}-address-authorizer
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          -  !ImportValue ${self:provider.stage}-user-pool-arn 
+    

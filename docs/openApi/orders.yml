@@ -53,26 +53,27 @@ get:
       - read
       - readAdmin
   parameters:
-    - name: filterStatus
+    - name: status
       in: query
       description: Filter orders that match the given status
       required: false
       schema:
         $ref: "./schemas/status.yml"
-    - name: filterTime
+    - name: start
       in: query
-      description: Filter orders that were created in the specified time interval
+      description: Filter orders that were created on or after the specified date
       required: false
       schema:
-        type: object
-        properties:
-          start:
-           type: string
-           format: date-time
-          end:
-           type: string
-           format: date-time
-    - name: filterUser
+        type: string
+        format: date-time
+    - name: end
+      in: query
+      description: Filter orders that were created before or on the specified date
+      required: false
+      schema:
+        type: string
+        format: date-time
+    - name: email
       in: query
       description: Filter orders made by a specific user (only vendor)
       required: false

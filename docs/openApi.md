@@ -1,5 +1,5 @@
 ---
-title: EmporioLambda Backend v0.1.0
+title: EmporioLambda Backend v0.1.1
 language_tabs:
   - shell: curl
 language_clients:
@@ -14,7 +14,7 @@ headingLevel: 2
 
 <!-- Generator: Widdershins v4.0.1 -->
 
-<h1 id="emporiolambda-backend">EmporioLambda Backend v0.1.0</h1>
+<h1 id="emporiolambda-backend">EmporioLambda Backend v0.1.1</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -206,16 +206,17 @@ Return a list of orders filtered according to given parameters
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|filterStatus|query|[#/paths/~1orders/get/parameters/0/schema](#schema#/paths/~1orders/get/parameters/0/schema)|false|Filter orders that match the given status|
-|filterTime|query|object|false|Filter orders that were created in the specified time interval|
-|filterUser|query|string(email)|false|Filter orders made by a specific user (only vendor)|
+|status|query|[#/paths/~1orders/get/parameters/0/schema](#schema#/paths/~1orders/get/parameters/0/schema)|false|Filter orders that match the given status|
+|start|query|string(date-time)|false|Filter orders that were created on or after the specified date|
+|end|query|string(date-time)|false|Filter orders that were created before or on the specified date|
+|email|query|string(email)|false|Filter orders made by a specific user (only vendor)|
 
 #### Enumerated Values
 
 |Parameter|Value|
 |---|---|
-|filterStatus|fulfilled|
-|filterStatus|new|
+|status|fulfilled|
+|status|new|
 
 > Example responses
 

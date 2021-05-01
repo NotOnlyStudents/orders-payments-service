@@ -22,8 +22,9 @@ class PayedOrderWithDynamoAnnotations implements Order {
   address: AddressWithDynamoAnnotations
   @attribute({ memberType: embed(ProductWithDynamoAnnotations) })
   products: ProductWithDynamoAnnotations[]
+  date: Date
   @attribute()
-  date: string
+  numberDate: number
   @attribute()
   status: OrderStatus
 
@@ -33,7 +34,7 @@ class PayedOrderWithDynamoAnnotations implements Order {
     customerEmail: string = "",
     address: Address = new AddressWithDynamoAnnotations(),
     products: Product[] = [],
-    date: string = "",
+    date: Date = new Date(Date.now()),
     status: OrderStatus = OrderStatus.new
   ) {
     this.id = id
@@ -42,6 +43,7 @@ class PayedOrderWithDynamoAnnotations implements Order {
     this.address = address
     this.products = products
     this.date = date
+    this.numberDate = this.date.getTime()
     this.status = status
   }
 
@@ -53,6 +55,8 @@ const annotate = (order: Order, customerId: string,): PayedOrderWithDynamoAnnota
 
 const deannotate = (annotatedOrder: PayedOrderWithDynamoAnnotations): Order => {
   delete annotatedOrder.customerId
+  annotatedOrder.date = new Date(annotatedOrder.numberDate)
+  delete annotatedOrder.numberDate
   return annotatedOrder
 }
 export { PayedOrderWithDynamoAnnotations, annotate, deannotate }

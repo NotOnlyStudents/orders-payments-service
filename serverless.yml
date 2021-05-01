@@ -28,6 +28,13 @@ functions:
           method: get
           cors: true
 #            integration: lambda
+  getOrders:
+    handler: src/endpoints/getOrders.default
+    events:
+      - http:
+          path: orders
+          method: get
+          cors: true
 #            authorizer:
 #              type: COGNITO_USER_POOLS
 #              authorizerId:

@@ -38,6 +38,5 @@ class UnPayedOrderWithDynamoAnnotations implements Order {
 
 }
 
-annotate(u)
 
 export default UnPayedOrderWithDynamoAnnotations

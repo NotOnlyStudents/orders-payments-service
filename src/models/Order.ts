@@ -11,7 +11,7 @@ interface Order {
     customerEmail: string
     address: Address
     products: Product[]
-    date: string
+    date: Date
     status: OrderStatus;
 }
 

@@ -36,7 +36,7 @@ patch:
     '200':
       description: Successfully updated the order status
     '400':
-      description: Bad status format or order could not be set to given status.
+      description: Bad status format.
     '401':
       description: Authorization information is missing or invalid.
     '403':

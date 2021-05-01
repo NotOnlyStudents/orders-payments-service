@@ -25,21 +25,26 @@ functions:
     events:
       - http:
           path: orders/{ID}
-          method: get
+          method: GET
           cors: true
-#            integration: lambda
   getOrders:
     handler: src/endpoints/getOrders.default
     events:
       - http:
           path: orders
-          method: get
+          method: GET
           cors: true
 #            authorizer:
 #              type: COGNITO_USER_POOLS
 #              authorizerId:
 #                Ref: ApiGatewayAuthorizer
-
+  fulfillOrder:
+    handler: src/endpoints/fulfillOrders.default
+    events:
+      - http:
+          path: orders/{ID}
+          method: PATCH
+          cors: true
 
 custom:
   customDomain:

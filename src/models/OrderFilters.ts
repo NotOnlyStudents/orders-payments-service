@@ -7,8 +7,6 @@ interface OrderFilter {
 }
 
 const isFilter = (f: OrderFilter): boolean => {
-    console.log('status' in f && !Object.values(OrderStatus).includes(f.status))
-    console.log('email' in f && !isEmailValid(f.email))
     return !(
         ('status' in f && !Object.values(OrderStatus).includes(f.status))
         || ('email' in f && !isEmailValid(f.email))

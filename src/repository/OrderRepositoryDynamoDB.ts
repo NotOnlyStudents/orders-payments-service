@@ -2,7 +2,7 @@ import { Order, OrderStatus } from "src/models/Order";
 import OrderRepository from "src/repository/OrderRepository"
 import { PayedOrderWithDynamoAnnotations, deannotate } from "src/repository/PayedOrderDynamoDB";
 import { DataMapper, QueryOptions, ScanOptions, UpdateOptions } from "@aws/dynamodb-data-mapper";
-import { ConditionExpression, equals, greaterThanOrEqualTo, lessThanOrEqualTo } from "@aws/dynamodb-expressions";
+import { ConditionExpression, equals, greaterThanOrEqualTo, lessThanOrEqualTo, UpdateExpression } from "@aws/dynamodb-expressions";
 import { DynamoDB } from "aws-sdk";
 import { OrderFilter } from "src/models/OrderFilters";
 
@@ -51,16 +51,20 @@ class OrderRepositoryDynamoDB implements OrderRepository {
     }
 
     async fulfillOrder(orderId: string): Promise<Order> {
-        const fulfilled: Order = Object.assign(
-            new PayedOrderWithDynamoAnnotations(),
-            { id: orderId, status: OrderStatus.fulfilled }
-        )
-        const options: UpdateOptions = { onMissing: 'skip' }
+        let fulfilled = new UpdateExpression()
+        fulfilled.set('status', OrderStatus.fulfilled)
+        const condition_: ConditionExpression = { ...equals(orderId), subject: 'id' }
         try {
-            return await this.mapper.update(fulfilled, options)
+            return await this.mapper.executeUpdateExpression(
+                fulfilled,
+                { id: orderId },
+                PayedOrderWithDynamoAnnotations,
+                { condition: condition_ }
+            )
         } catch (err) {
-            console.log(err)
-            return undefined
+            if (err.code && err.code === 'ConditionalCheckFailedException')
+                return undefined;
+            throw err
         }
     }
 }

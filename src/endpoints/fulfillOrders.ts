@@ -8,7 +8,7 @@ import { parseDocument } from "yaml"
 import { DynamoDB, } from "aws-sdk"
 import { ClientConfiguration } from "aws-sdk/clients/dynamodb"
 import { readFileSync as readFile } from 'fs'
-import getOrder from "src/lambdas/getOrder"
+import fulfillOrder from "src/lambdas/fulfillOrders"
 import OrderResponse from "src/models/OrderResponse"
 
 const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -17,7 +17,7 @@ const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGateway
     // const userName = event.requestContext.authorizer.claims['conito:username'] as string
     // const userGroups = event.requestContext.authorizer.claims['conito:groups'] as string[]
     // if (userGroups.includes("sellers"))
-    return getOrder(event.pathParameters.ID, repo)
+    return fulfillOrder(event.pathParameters.ID, repo)
     return new OrderResponse(403)
 }
 

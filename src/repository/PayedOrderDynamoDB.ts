@@ -23,7 +23,7 @@ class PayedOrderWithDynamoAnnotations implements Order {
   @attribute({ memberType: embed(ProductWithDynamoAnnotations) })
   products: ProductWithDynamoAnnotations[]
   date: Date
-  @attribute()
+  @attribute({ defaultProvider: () => Date.now() })
   numberDate: number
   @attribute()
   status: OrderStatus
@@ -34,7 +34,6 @@ class PayedOrderWithDynamoAnnotations implements Order {
     customerEmail: string = "",
     address: Address = new AddressWithDynamoAnnotations(),
     products: Product[] = [],
-    date: Date = new Date(Date.now()),
     status: OrderStatus = OrderStatus.new
   ) {
     this.id = id
@@ -42,8 +41,6 @@ class PayedOrderWithDynamoAnnotations implements Order {
     this.customerEmail = customerEmail
     this.address = address
     this.products = products
-    this.date = date
-    this.numberDate = this.date.getTime()
     this.status = status
   }
 

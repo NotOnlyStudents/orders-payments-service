@@ -1,10 +1,10 @@
 import OrderResponse from "src/models/OrderResponse"
 import OrderRepository from "src/repository/OrderRepository"
-import OrderFilter from "src/models/OrderFilters"
+import { OrderFilter, isFilter } from "src/models/OrderFilters"
 import { Order } from "src/models/Order"
 
 const lambda = async (repo: OrderRepository, filter: OrderFilter, customerId: string = ""): Promise<OrderResponse> => {
-    if (customerId !== "" && filter.email)
+    if ((customerId !== "" && filter.email) || !isFilter(filter))
         return new OrderResponse(400)
     let orders: Order[] = []
     const queryResult = customerId === "" ? repo.getSellerOrders(filter) : repo.getCustomerOrders(customerId, filter);

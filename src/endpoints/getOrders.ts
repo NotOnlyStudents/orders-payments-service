@@ -9,9 +9,7 @@ import { DynamoDB, } from "aws-sdk"
 import { ClientConfiguration } from "aws-sdk/clients/dynamodb"
 import { readFileSync as readFile } from 'fs'
 import getOrders from "src/lambdas/getOrders"
-import OrderResponse from "src/models/OrderResponse"
-import OrderFilter from "src/models/OrderFilters"
-import { OrderStatus } from "src/models/Order"
+import { OrderFilter } from "src/models/OrderFilters"
 
 const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const dynamoConfig: ClientConfiguration = parseDocument(readFile(process.env.DYNAMODB_CONFIG_FILE_PATH, 'utf-8')).toJSON()
@@ -20,7 +18,7 @@ const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGateway
     // const userGroups = event.requestContext.authorizer.claims['conito:groups'] as string[]
     // if (userGroups.includes("buyers"))
     const filters: OrderFilter = { ...event.queryStringParameters };
-    return getOrders(repo, filters, "utente")
+    return getOrders(repo, filters)
     // else if (userGroups.includes("sellers"))
 }
 

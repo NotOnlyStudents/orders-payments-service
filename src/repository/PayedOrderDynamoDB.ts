@@ -47,7 +47,7 @@ class PayedOrderWithDynamoAnnotations implements Order {
 }
 const annotate = (order: Order, customerId: string,): PayedOrderWithDynamoAnnotations => {
   const annotatedProducts: ProductWithDynamoAnnotations[] = order.products.map(annotateProduct)
-  return new PayedOrderWithDynamoAnnotations(order.id, customerId, order.customerEmail, annotateAddress(order.address), annotatedProducts, order.date, order.status)
+  return new PayedOrderWithDynamoAnnotations(order.id, customerId, order.customerEmail, annotateAddress(order.address), annotatedProducts, order.status)
 }
 
 const deannotate = (annotatedOrder: PayedOrderWithDynamoAnnotations): Order => {

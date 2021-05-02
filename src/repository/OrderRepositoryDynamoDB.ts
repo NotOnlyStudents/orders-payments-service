@@ -1,17 +1,29 @@
 import { Order, OrderStatus } from "src/models/Order";
 import OrderRepository from "src/repository/OrderRepository"
 import { PayedOrderWithDynamoAnnotations, deannotate } from "src/repository/PayedOrderDynamoDB";
-import { DataMapper, QueryOptions, ScanOptions, UpdateOptions } from "@aws/dynamodb-data-mapper";
+import UnPayedOrderWithDynamoAnnotations from "src/repository/UnPayedOrderDynamoDB";
+import { DataMapper, QueryOptions, ScanOptions } from "@aws/dynamodb-data-mapper";
 import { ConditionExpression, equals, greaterThanOrEqualTo, lessThanOrEqualTo, UpdateExpression } from "@aws/dynamodb-expressions";
-import { DynamoDB } from "aws-sdk";
+import { CustomerProfiles, DynamoDB } from "aws-sdk";
 import { OrderFilter } from "src/models/OrderFilters";
+import Address from "src/models/Address";
+import Product from "src/models/Product";
 
 class OrderRepositoryDynamoDB implements OrderRepository {
     readonly mapper: DataMapper;
 
     constructor(dynamoConnection: DynamoDB) {
-
         this.mapper = new DataMapper({ client: dynamoConnection })
+    }
+
+    async placeOrder(paymentID: string, addr: Address, products: Product[], customerEmail: string, additionalInfo: string): Promise<boolean> {
+        let newOrder = new UnPayedOrderWithDynamoAnnotations(paymentID, customerEmail, addr, products, additionalInfo)
+        try {
+            await this.mapper.put(newOrder)
+            return true
+        } catch {
+            return false
+        }
     }
 
     async getOrder(orderId: string, customerId: string = ""): Promise<Order> {
@@ -27,7 +39,7 @@ class OrderRepositoryDynamoDB implements OrderRepository {
             return undefined;
         return deannotate(annotatedResult)
     }
-    async *getCustomerOrders(customerId_: string, filterParams?: OrderFilter): AsyncIterable<Order> {
+    async * getCustomerOrders(customerId_: string, filterParams?: OrderFilter): AsyncIterable<Order> {
         let scanParams: QueryOptions = { indexName: "userIdIndex" }
         if (!isEmpty(filterParams)) {
             const filterExpression = toConditionExpression(filterParams);
@@ -38,7 +50,7 @@ class OrderRepositoryDynamoDB implements OrderRepository {
             yield deannotate(elem)
         }
     }
-    async *getSellerOrders(filterParams?: OrderFilter): AsyncIterable<Order> {
+    async * getSellerOrders(filterParams?: OrderFilter): AsyncIterable<Order> {
         let scanParams: ScanOptions = {}
         if (!isEmpty(filterParams)) {
             const filterExpression = toConditionExpression(filterParams);
@@ -55,12 +67,11 @@ class OrderRepositoryDynamoDB implements OrderRepository {
         fulfilled.set('status', OrderStatus.fulfilled)
         const condition_: ConditionExpression = { ...equals(orderId), subject: 'id' }
         try {
-            return await this.mapper.executeUpdateExpression(
+            return deannotate(await this.mapper.executeUpdateExpression(
                 fulfilled,
                 { id: orderId },
                 PayedOrderWithDynamoAnnotations,
-                { condition: condition_ }
-            )
+                { condition: condition_ }))
         } catch (err) {
             if (err.code && err.code === 'ConditionalCheckFailedException')
                 return undefined;

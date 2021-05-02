@@ -20,6 +20,13 @@ plugins:
   - serverless-offline
   - serverless-domain-manager
 functions:
+  newOrder:
+    handler: src/endpoints/newOrder.default
+    events:
+      - http:
+          path: orders
+          method: POST
+          cors: true
   getOrder:
     handler: src/endpoints/getOrder.default
     events:
@@ -70,19 +77,19 @@ custom:
           sources: [ offline/seeds/orders.json ]
 resources:
   Resources:
-#    OrdersToPayTable:
-#      Type: AWS::DynamoDB::Table
-#      Properties:
-#        TableName: ${self:provider.environment.TO_PAY_ORDERS_TABLE_NAME}
-#        AttributeDefinitions:
-#          - AttributeName: paymentId
-#            AttributeType: S
-#        KeySchema:
-#          - AttributeName: paymentId
-#            KeyType: HASH
-#        ProvisionedThroughput:
-#          ReadCapacityUnits: 5
-#          WriteCapacityUnits: 5
+    OrdersToPayTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TO_PAY_ORDERS_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: paymentId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: paymentId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
     OrdersPayedTable:
       Type: AWS::DynamoDB::Table
       Properties:

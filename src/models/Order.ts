@@ -13,6 +13,7 @@ interface Order {
     products: Product[]
     date: Date
     status: OrderStatus;
+    additionalInfo: string;
 }
 
 export { Order, OrderStatus }

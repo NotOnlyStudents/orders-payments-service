@@ -1,4 +1,5 @@
-import Product from "src/models/Product"
+import Product from 'src/models/Product';
+
 interface CartToken {
   token: TokenSignedProductData
   hmac: string
@@ -13,4 +14,4 @@ interface ProductsData {
   products: Product[]
 }
 
-export default CartToken
+export default CartToken;

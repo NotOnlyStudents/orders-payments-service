@@ -1,7 +1,5 @@
-import PaymentResponse from "./PaymentResponse";
-
 enum PaymentStatus {
-  success = "payment_intent.succeeded"
+  success = 'payment_intent.succeeded',
 }
 
 interface PaymentEvent {
@@ -13,4 +11,4 @@ interface PaymentEvent {
   }
 }
 
-export { PaymentEvent, PaymentStatus }
+export { PaymentEvent, PaymentStatus };

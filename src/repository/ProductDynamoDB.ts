@@ -1,51 +1,69 @@
-import { attribute } from "@aws/dynamodb-data-mapper-annotations"
-import Product from "src/models/Product"
+import { attribute } from '@aws/dynamodb-data-mapper-annotations';
+import Product from 'src/models/Product';
 
 class ProductWithDynamoAnnotations implements Product {
   @attribute()
-  id: string
+  id: string;
+
   @attribute()
-  name: string
+  name: string;
+
   @attribute()
-  description: string
+  description: string;
+
   @attribute()
-  images: string[]
+  images: string[];
+
   @attribute()
-  quantity: number
+  quantity: number;
+
   @attribute()
-  price: number
+  price: number;
+
   @attribute()
-  available: boolean
+  available: boolean;
+
   @attribute()
-  evidence: boolean
+  evidence: boolean;
+
   @attribute()
-  category: string[]
+  category: string[];
 
   constructor(
-    id: string = "",
-    name: string = "",
-    description: string = "",
+    id: string = '',
+    name: string = '',
+    description: string = '',
     images: string[] = [],
     quantity: number = 0,
     price: number = 0,
     available: boolean = false,
     evidence: boolean = false,
-    category: string[] = []
+    category: string[] = [],
   ) {
-    this.id = id
-    this.name = name
-    this.description = description
-    this.images = images
-    this.quantity = quantity
-    this.price = price
-    this.available = available
-    this.evidence = evidence
-    this.category = category
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.images = images;
+    this.quantity = quantity;
+    this.price = price;
+    this.available = available;
+    this.evidence = evidence;
+    this.category = category;
   }
 }
 
-const annotate = (product: Product): ProductWithDynamoAnnotations => {
-  return new ProductWithDynamoAnnotations(product.id, product.name, product.description, product.images, product.quantity, product.price, product.available, product.evidence, product.category)
-}
+const annotate = (
+  p: Product,
+): ProductWithDynamoAnnotations => (
+  new ProductWithDynamoAnnotations(p.id,
+    p.name,
+    p.description,
+    p.images,
+    p.quantity,
+    p.price,
+    p.available,
+    p.evidence,
+    p.category)
+);
 
-export { ProductWithDynamoAnnotations, annotate }
+export { ProductWithDynamoAnnotations, annotate };

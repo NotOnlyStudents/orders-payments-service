@@ -6,4 +6,4 @@ interface Address {
   cap: number
 }
 
-export default Address
+export default Address;

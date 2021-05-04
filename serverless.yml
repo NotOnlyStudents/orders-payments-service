@@ -1,4 +1,4 @@
-service: addresses-service
+service: order-service
 
 frameworkVersion: "2"
 

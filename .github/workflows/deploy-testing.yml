@@ -21,7 +21,7 @@ jobs:
         run: npm run lint
       - name: Deploy
         if: success()
-        uses: serverless/github-action@v1.53.0
+        uses: serverless/github-action@v2.18.0
         with:
           args: deploy --stage test
         env:

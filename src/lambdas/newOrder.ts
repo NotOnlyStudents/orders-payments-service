@@ -27,12 +27,12 @@ const lambda = async (
     .map((prod) => prod.price)
     .reduce((prev, curr) => curr + prev);
   const sessionId = sendOrderToStripe(payment);
-  repo.placeOrder(sessionId,
+  if (await repo.placeOrder(sessionId,
     addr,
     t.token.data.products,
     customerEmail,
     customerId,
-    additionalInfo);
-  return new PaymentResponse(200, sessionId);
+    additionalInfo)) return new PaymentResponse(200, sessionId);
+  return new PaymentResponse(500);
 };
 export default lambda;

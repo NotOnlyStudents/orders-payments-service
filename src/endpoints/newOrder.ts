@@ -17,9 +17,6 @@ const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGateway
   const userName = event.requestContext.authorizer.claims['cognito:username'] as string;
   const userEmail = event.requestContext.authorizer.claims.email as string;
   const userGroups = event.requestContext.authorizer.claims['cognito:groups'] as string[];
-  console.log(userEmail);
-  console.log(userName);
-  console.log(userGroups);
   if (userGroups.includes('buyers')) {
     let body;
     try {

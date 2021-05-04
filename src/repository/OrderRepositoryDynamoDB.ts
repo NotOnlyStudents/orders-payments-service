@@ -59,8 +59,9 @@ class OrderRepositoryDynamoDB implements OrderRepository {
       products,
       additionalInfo);
     try {
-      console.log(await this.mapper.put(newOrder));
-      return true;
+      const result = await this.mapper.put(newOrder);
+      console.log(result);
+      return typeof result !== 'undefined';
     } catch {
       return false;
     }
@@ -125,9 +126,11 @@ class OrderRepositoryDynamoDB implements OrderRepository {
     try {
       const o = await this.mapper.get(new UnPayedOrderWithDynamoAnnotations(paymentId));
       const o2 = new PayedOrderWithDynamoAnnotations('', o.customerId, o.customerEmail, o.address, o.products, o.additionalInfo);
-      await this.mapper.put(o2);
-      await this.mapper.delete(o);
-      return true;
+      const outcome1 = await this.mapper.put(o2);
+      const outcome2 = await this.mapper.delete(o);
+      console.log(outcome1);
+      console.log(outcome2);
+      return typeof outcome1 !== 'undefined' && typeof outcome2 !== 'undefined';
     } catch (err) {
       if (err.name && err.name === 'ItemNotFoundException') return false;
       throw err;

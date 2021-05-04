@@ -4,7 +4,7 @@ import { PayedOrderWithDynamoAnnotations, deannotate } from "src/repository/Paye
 import UnPayedOrderWithDynamoAnnotations from "src/repository/UnPayedOrderDynamoDB";
 import { DataMapper, QueryOptions, ScanOptions } from "@aws/dynamodb-data-mapper";
 import { ConditionExpression, equals, greaterThanOrEqualTo, lessThanOrEqualTo, UpdateExpression } from "@aws/dynamodb-expressions";
-import { CustomerProfiles, DynamoDB } from "aws-sdk";
+import { DynamoDB } from "aws-sdk";
 import { OrderFilter } from "src/models/OrderFilters";
 import Address from "src/models/Address";
 import Product from "src/models/Product";
@@ -16,8 +16,8 @@ class OrderRepositoryDynamoDB implements OrderRepository {
         this.mapper = new DataMapper({ client: dynamoConnection })
     }
 
-    async placeOrder(paymentID: string, addr: Address, products: Product[], customerEmail: string, additionalInfo: string): Promise<boolean> {
-        let newOrder = new UnPayedOrderWithDynamoAnnotations(paymentID, customerEmail, addr, products, additionalInfo)
+    async placeOrder(paymentID: string, addr: Address, products: Product[], customerEmail: string, customerId: string, additionalInfo: string): Promise<boolean> {
+        let newOrder = new UnPayedOrderWithDynamoAnnotations(paymentID, customerEmail, customerId, addr, products, additionalInfo)
         try {
             await this.mapper.put(newOrder)
             return true
@@ -75,6 +75,20 @@ class OrderRepositoryDynamoDB implements OrderRepository {
         } catch (err) {
             if (err.code && err.code === 'ConditionalCheckFailedException')
                 return undefined;
+            throw err
+        }
+    }
+
+    async moveToPayedOrders(paymentId: string): Promise<boolean> {
+        try {
+            const o = await this.mapper.get(new UnPayedOrderWithDynamoAnnotations(paymentId))
+            const o2 = new PayedOrderWithDynamoAnnotations("", o.customerId, o.customerEmail, o.address, o.products, o.additionalInfo);
+            await this.mapper.put(o2);
+            await this.mapper.delete(o)
+            return true
+        } catch (err) {
+            if (err.name && err.name === 'ItemNotFoundException')
+                return false;
             throw err
         }
     }

@@ -11,6 +11,7 @@ interface OrderRepository {
         customerEmail: string,
         customerId: string,
         additionalInfo: string): Promise<boolean>
+    moveToPayedOrders(paymentId: string): Promise<boolean>
     getOrder(orderId: string, customerId?: string): Promise<Order>
     getCustomerOrders(customerId: string, filterParams?: OrderFilter): AsyncIterable<Order>
     getSellerOrders(filterParams: OrderFilter): AsyncIterable<Order>

@@ -52,7 +52,13 @@ functions:
           path: orders/{ID}
           method: PATCH
           cors: true
-
+  processPaymentOutcome:
+    handler: src/endpoints/processPaymentOutcome.default
+    events:
+      - http:
+          path: stripe-hook
+          method: POST
+          cors: true
 custom:
   customDomain:
     domainName: api.annoiato.net

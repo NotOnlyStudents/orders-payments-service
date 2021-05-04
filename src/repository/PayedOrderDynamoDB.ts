@@ -37,7 +37,8 @@ class PayedOrderWithDynamoAnnotations {
     products: Product[] = [],
     additionalInfo: string = ""
   ) {
-    this.id = id
+    if (id !== "")
+      this.id = id
     this.customerId = customerId
     this.customerEmail = customerEmail
     this.address = address

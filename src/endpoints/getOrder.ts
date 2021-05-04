@@ -14,13 +14,14 @@ import OrderResponse from "src/models/OrderResponse"
 const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const dynamoConfig: ClientConfiguration = parseDocument(readFile(process.env.DYNAMODB_CONFIG_FILE_PATH, 'utf-8')).toJSON()
     const repo = new OrderRepositoryDynamoDB(new DynamoDB(dynamoConfig))
-    // const userName = event.requestContext.authorizer.claims['conito:username'] as string
-    // const userGroups = event.requestContext.authorizer.claims['conito:groups'] as string[]
-    // if (userGroups.includes("buyers"))
-    return getOrder(event.pathParameters.ID, repo, "6a7b0db0-65ce-4864-b661-ecf424124cd3")
-    // else if (userGroups.includes("sellers"))
-    return getOrder(event.pathParameters.ID, repo)
-    return new OrderResponse(401)
+    const userName = event.requestContext.authorizer.claims['cognito:username'] as string
+    const userGroups = event.requestContext.authorizer.claims['cognito:groups'] as string[]
+    if (userGroups.includes("sellers"))
+        return getOrder(event.pathParameters.ID, repo)
+    else if (userGroups.includes("buyers"))
+        return getOrder(event.pathParameters.ID, repo, userName)
+    else
+        return new OrderResponse(401)
 }
 
 export default handler

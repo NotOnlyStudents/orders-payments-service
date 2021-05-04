@@ -4,7 +4,6 @@ import { AddressWithDynamoAnnotations } from "src/repository/AddressDynamoDB"
 import { ProductWithDynamoAnnotations } from "src/repository/ProductDynamoDB";
 import Product from "src/models/Product"
 import { embed } from "@aws/dynamodb-data-mapper";
-import { runInThisContext } from "vm";
 
 @table(process.env.TO_PAY_ORDERS_TABLE_NAME)
 class UnPayedOrderWithDynamoAnnotations {

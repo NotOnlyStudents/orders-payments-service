@@ -12,13 +12,30 @@ provider:
     DYNAMODB_CONFIG_FILE_PATH: configs/${self:provider.stage}-dynamo.yml
     TO_PAY_ORDERS_TABLE_NAME: ${self:provider.stage}-orders-to-pay
     PAYED_ORDERS_TABLE_NAME: ${self:provider.stage}-orders-payed
+  apiGateway:
+    shouldStartNameWithService: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: '*'
 
 plugins:
   - serverless-webpack
   - serverless-dynamodb-local
   - serverless-dynamodb-seed
   - serverless-offline
-  - serverless-domain-manager
+
+package:
+  individually: true
+
 functions:
   newOrder:
     handler: src/endpoints/newOrder.default
@@ -27,6 +44,10 @@ functions:
           path: orders
           method: POST
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   getOrder:
     handler: src/endpoints/getOrder.default
     events:
@@ -34,6 +55,10 @@ functions:
           path: orders/{ID}
           method: GET
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   getOrders:
     handler: src/endpoints/getOrders.default
     events:
@@ -41,10 +66,10 @@ functions:
           path: orders
           method: GET
           cors: true
-#            authorizer:
-#              type: COGNITO_USER_POOLS
-#              authorizerId:
-#                Ref: ApiGatewayAuthorizer
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   fulfillOrder:
     handler: src/endpoints/fulfillOrders.default
     events:
@@ -52,6 +77,10 @@ functions:
           path: orders/{ID}
           method: PATCH
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   processPaymentOutcome:
     handler: src/endpoints/processPaymentOutcome.default
     events:
@@ -60,11 +89,9 @@ functions:
           method: POST
           cors: true
 custom:
-  customDomain:
-    domainName: api.annoiato.net
-    basePath: ${self:provider.stage}
-    stage: ${self:provider.stage}
-    createRoute53Record: true
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
   dynamodb:
     stages:
       - dev

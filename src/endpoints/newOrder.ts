@@ -20,7 +20,9 @@ const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGateway
   if (userGroups.includes('buyers')) {
     let body;
     try {
+      console.log(event.body);
       body = JSON.parse(event.body);
+      console.log(body);
     } catch {
       return new PaymentResponse(400);
     }

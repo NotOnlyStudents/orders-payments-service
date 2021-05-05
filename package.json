@@ -50,7 +50,7 @@
     "@aws/dynamodb-expressions": "^0.7.3",
     "@curveball/http-errors": "^0.4.0",
     "aws-sdk": "^2.846.0",
-    "stripe": "^8.144.0",
+    "stripe": "^8.146.0",
     "tsc": "^1.20150623.0",
     "yaml": "^1.10.2"
   },

@@ -9,6 +9,7 @@ provider:
   stage: ${opt:stage, "dev"}
   lambdaHashingVersion: 20201221
   environment:
+    stripeSecretKey: sk_test_51IHqhuEKthtArr3SXYScDHIOczJts6WLSVezPRwEu1ri7Yaka6fVjdkdIm4upAwTuZ2MSHchRcSKJgla0zt3TqbN00e2eqyOr2
     DYNAMODB_CONFIG_FILE_PATH: configs/${self:provider.stage}-dynamo.yml
     TO_PAY_ORDERS_TABLE_NAME: ${self:provider.stage}-orders-to-pay
     PAYED_ORDERS_TABLE_NAME: ${self:provider.stage}-orders-payed

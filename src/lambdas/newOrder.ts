@@ -1,8 +1,18 @@
 import PaymentResponse from 'src/models/PaymentResponse';
 import OrderRepository from 'src/repository/OrderRepository';
 import { createHmac } from 'crypto';
+import Stripe from "stripe";
 import CartToken from 'src/models/CartToken';
 import Address from 'src/models/Address';
+
+let clientBaseUrl: string;
+if (process.env.IS_OFFLINE) {
+  // baseUrl = "http://localhost:3000";
+  clientBaseUrl = "http://localhost:8080";
+} else {
+  // baseUrl = "https://api.annoiato.net";
+  clientBaseUrl = "https://shop.annoiato.net";
+}
 
 function validateToken(t: CartToken): boolean {
   const hmac = createHmac('sha256', 'password')
@@ -11,8 +21,33 @@ function validateToken(t: CartToken): boolean {
   return hmac === t.hmac && new Date(t.token.timeout).getTime() >= Date.now();
 }
 
-function sendOrderToStripe(_paymentDue: number): string {
-  return `pi_testPaymentId${_paymentDue}`;
+async function sendOrderToStripe(_paymentDue: number): Promise<{ sessionId: string, paymentIntent: string}> {
+  try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2020-08-27",
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: [{
+        price_data: {
+          currency: "eur",
+          product_data: {
+            name: "Carrello"
+          },
+          unit_amount: _paymentDue,
+        },
+        quantity: 1,
+      }],
+      // TODO: redirect to backend
+      success_url: `${clientBaseUrl}/purchased`,
+      cancel_url: `${clientBaseUrl}/`,
+    });
+    return {sessionId: session.id, paymentIntent: session.payment_intent.toString()};
+  } catch(error) {
+    throw error;
+  }
 }
 const lambda = async (
   repo: OrderRepository,
@@ -26,13 +61,13 @@ const lambda = async (
   const payment = t.token.data.products
     .map((prod) => prod.price)
     .reduce((prev, curr) => curr + prev);
-  const sessionId = sendOrderToStripe(payment);
-  if (await repo.placeOrder(sessionId,
+  const session = await sendOrderToStripe(payment);
+  if (await repo.placeOrder(session.paymentIntent,
     addr,
     t.token.data.products,
     customerEmail,
     customerId,
-    additionalInfo)) return new PaymentResponse(200, sessionId);
+    additionalInfo)) return new PaymentResponse(200, session.sessionId);
   return new PaymentResponse(500);
 };
 export default lambda;

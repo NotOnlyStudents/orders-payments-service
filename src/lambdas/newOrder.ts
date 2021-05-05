@@ -1,18 +1,11 @@
 import PaymentResponse from 'src/models/PaymentResponse';
 import OrderRepository from 'src/repository/OrderRepository';
 import { createHmac } from 'crypto';
-import Stripe from "stripe";
+import Stripe from 'stripe';
 import CartToken from 'src/models/CartToken';
 import Address from 'src/models/Address';
 
-let clientBaseUrl: string;
-if (process.env.IS_OFFLINE) {
-  // baseUrl = "http://localhost:3000";
-  clientBaseUrl = "http://localhost:8080";
-} else {
-  // baseUrl = "https://api.annoiato.net";
-  clientBaseUrl = "https://shop.annoiato.net";
-}
+const clientBaseUrl = 'http://localhost:8080';
 
 function validateToken(t: CartToken): boolean {
   const hmac = createHmac('sha256', 'password')
@@ -21,33 +14,33 @@ function validateToken(t: CartToken): boolean {
   return hmac === t.hmac && new Date(t.token.timeout).getTime() >= Date.now();
 }
 
-async function sendOrderToStripe(_paymentDue: number): Promise<{ sessionId: string, paymentIntent: string}> {
-  try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2020-08-27",
-    });
+async function sendOrderToStripe(
+  _paymentDue: number,
+): Promise<{ sessionId: string, paymentIntent: string }> {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2020-08-27',
+  });
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
-      line_items: [{
-        price_data: {
-          currency: "eur",
-          product_data: {
-            name: "Carrello"
-          },
-          unit_amount: _paymentDue,
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    line_items: [{
+      price_data: {
+        currency: 'eur',
+        product_data: {
+          name: 'Carrello',
         },
-        quantity: 1,
-      }],
-      // TODO: redirect to backend
-      success_url: `${clientBaseUrl}/purchased`,
-      cancel_url: `${clientBaseUrl}/`,
-    });
-    return {sessionId: session.id, paymentIntent: session.payment_intent.toString()};
-  } catch(error) {
-    throw error;
-  }
+        unit_amount: _paymentDue,
+      },
+      quantity: 1,
+    }],
+    success_url: `${clientBaseUrl}/purchased`,
+    cancel_url: `${clientBaseUrl}/`,
+  });
+  return {
+    sessionId: session.id,
+    paymentIntent: session.payment_intent.toString(),
+  };
 }
 const lambda = async (
   repo: OrderRepository,

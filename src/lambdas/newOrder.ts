@@ -17,8 +17,7 @@ function validateToken(t: CartToken): boolean {
 async function sendOrderToStripe(
   _paymentDue: number,
 ): Promise<{ sessionId: string, paymentIntent: string }> {
-  console.log(process.env.STRIPE_SECRET_KEY);
-  const stripe = new Stripe("sk_test_51IHqhuEKthtArr3SXYScDHIOczJts6WLSVezPRwEu1ri7Yaka6fVjdkdIm4upAwTuZ2MSHchRcSKJgla0zt3TqbN00e2eqyOr2", {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: '2020-08-27',
   });
 

@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 import CartToken from 'src/models/CartToken';
 import Address from 'src/models/Address';
 
-const clientBaseUrl = 'http://localhost:8080';
+const clientBaseUrl = 'https://shop.annoiato.net';
 
 function validateToken(t: CartToken): boolean {
   const hmac = createHmac('sha256', 'password')
@@ -30,11 +30,11 @@ async function sendOrderToStripe(
         product_data: {
           name: 'Carrello',
         },
-        unit_amount: _paymentDue,
+        unit_amount: _paymentDue * 100,
       },
       quantity: 1,
     }],
-    success_url: `${clientBaseUrl}/purchased`,
+    success_url: `${clientBaseUrl}/`,
     cancel_url: `${clientBaseUrl}/`,
   });
   return {

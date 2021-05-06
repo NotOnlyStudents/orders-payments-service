@@ -7,7 +7,7 @@ interface Product {
   price: number;
   available: boolean;
   evidence: boolean;
-  category: string[];
+  categories: string[];
 }
 
 export default Product;

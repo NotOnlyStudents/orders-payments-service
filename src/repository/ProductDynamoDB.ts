@@ -27,7 +27,7 @@ class ProductWithDynamoAnnotations implements Product {
   evidence: boolean;
 
   @attribute()
-  category: string[];
+  categories: string[];
 
   constructor(
     id: string = '',
@@ -38,7 +38,7 @@ class ProductWithDynamoAnnotations implements Product {
     price: number = 0,
     available: boolean = false,
     evidence: boolean = false,
-    category: string[] = [],
+    categories: string[] = [],
   ) {
     this.id = id;
     this.name = name;
@@ -48,7 +48,7 @@ class ProductWithDynamoAnnotations implements Product {
     this.price = price;
     this.available = available;
     this.evidence = evidence;
-    this.category = category;
+    this.categories = categories;
   }
 }
 
@@ -63,7 +63,7 @@ const annotate = (
     p.price,
     p.available,
     p.evidence,
-    p.category)
+    p.categories)
 );
 
 export { ProductWithDynamoAnnotations, annotate };

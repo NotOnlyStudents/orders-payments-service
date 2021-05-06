@@ -4,6 +4,7 @@ import { createHmac } from 'crypto';
 import Stripe from 'stripe';
 import CartToken from 'src/models/CartToken';
 import Address from 'src/models/Address';
+import { IniLoader } from 'aws-sdk';
 
 const clientBaseUrl = 'https://shop.annoiato.net';
 
@@ -52,8 +53,7 @@ const lambda = async (
 ): Promise<PaymentResponse> => {
   if (!(customerEmail && customerId && t) || !validateToken(t)) return new PaymentResponse(400);
   const payment = t.token.data.products
-    .map((prod) => prod.price)
-    .reduce((prev, curr) => curr + prev);
+    .reduce((prev, curr) => curr.quantity * curr.price + prev, 0);
   const session = await sendOrderToStripe(payment);
   if (await repo.placeOrder(session.paymentIntent,
     addr,

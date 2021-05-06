@@ -4,7 +4,6 @@ import { createHmac } from 'crypto';
 import Stripe from 'stripe';
 import CartToken from 'src/models/CartToken';
 import Address from 'src/models/Address';
-import { IniLoader } from 'aws-sdk';
 
 const clientBaseUrl = 'https://shop.annoiato.net';
 

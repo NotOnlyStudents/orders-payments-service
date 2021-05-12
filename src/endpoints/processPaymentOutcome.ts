@@ -6,7 +6,7 @@ import {
 import OrderRepositoryDynamoDB from 'src/repository/OrderRepositoryDynamoDB';
 import { parseDocument } from 'yaml';
 import { DynamoDB } from 'aws-sdk';
-import { SNSClient } from "@aws-sdk/client-sns";
+import { SNSClient } from '@aws-sdk/client-sns';
 import { ClientConfiguration } from 'aws-sdk/clients/dynamodb';
 import { readFileSync as readFile } from 'fs';
 import processPaymentOutcome from 'src/lambdas/processPaymentOutcome';
@@ -25,7 +25,11 @@ const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGateway
   } catch {
     return new PaymentResponse(400);
   }
-  return processPaymentOutcome(repo, paymentEvent, snsConnection, snsConfig.payedCartARN, snsConfig.productBoughtARN);
+  return processPaymentOutcome(repo,
+    paymentEvent,
+    snsConnection,
+    snsConfig.payedCartARN,
+    snsConfig.productBoughtARN);
 };
 
 export default handler;

@@ -128,7 +128,12 @@ class OrderRepositoryDynamoDB implements OrderRepository {
       const o2 = new PayedOrderWithDynamoAnnotations('', o.customerId, o.customerEmail, o.address, o.products, o.additionalInfo);
       await this.mapper.put(o2);
       await this.mapper.delete(o);
-      return { cartId: o.customerId, products: o2.products.map(p => { return { id: p.id, quantity: p.quantity } }) };
+      return {
+        cartId: o.customerId,
+        products: o2.products.map((p) => ({
+          id: p.id, quantity: p.quantity,
+        })),
+      };
     } catch (err) {
       if (err.name && err.name === 'ItemNotFoundException') return undefined;
       throw err;

@@ -2,7 +2,8 @@ import Address from 'src/models/Address';
 import { Order } from 'src/models/Order';
 import { OrderFilter } from 'src/models/OrderFilters';
 import Product from 'src/models/Product';
-import { SNSMessageInfo } from "src/models/SNSMessageInfo";
+import { SNSMessageInfo } from 'src/models/SNSMessageInfo';
+
 interface OrderRepository {
 
   placeOrder(paymentId: string,

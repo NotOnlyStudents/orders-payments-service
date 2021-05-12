@@ -10,6 +10,7 @@ import { DynamoDB } from 'aws-sdk';
 import { OrderFilter } from 'src/models/OrderFilters';
 import Address from 'src/models/Address';
 import Product from 'src/models/Product';
+import { SNSMessageInfo } from 'src/models/SNSMessageInfo';
 
 function isEmpty(obj: object): boolean {
   return Object.keys(obj).length === 0;
@@ -121,15 +122,15 @@ class OrderRepositoryDynamoDB implements OrderRepository {
     }
   }
 
-  async moveToPayedOrders(paymentId: string): Promise<boolean> {
+  async moveToPayedOrders(paymentId: string): Promise<SNSMessageInfo> {
     try {
       const o = await this.mapper.get(new UnPayedOrderWithDynamoAnnotations(paymentId));
       const o2 = new PayedOrderWithDynamoAnnotations('', o.customerId, o.customerEmail, o.address, o.products, o.additionalInfo);
-      const outcome1 = await this.mapper.put(o2);
-      const outcome2 = await this.mapper.delete(o);
-      return typeof outcome1 !== 'undefined' && typeof outcome2 !== 'undefined';
+      await this.mapper.put(o2);
+      await this.mapper.delete(o);
+      return { cartId: o.customerId, products: o2.products.map(p => { return { id: p.id, quantity: p.quantity } }) };
     } catch (err) {
-      if (err.name && err.name === 'ItemNotFoundException') return false;
+      if (err.name && err.name === 'ItemNotFoundException') return undefined;
       throw err;
     }
   }

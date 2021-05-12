@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 import CartToken from 'src/models/CartToken';
 import Address from 'src/models/Address';
 
-const clientBaseUrl = 'https://shop.annoiato.net';
+const clientBaseUrl = 'https://emporiolambda-nos.netlify.app/';
 
 function validateToken(t: CartToken): boolean {
   const hmac = createHmac('sha256', 'password')

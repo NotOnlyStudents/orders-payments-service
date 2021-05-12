@@ -135,6 +135,7 @@ class OrderRepositoryDynamoDB implements OrderRepository {
         })),
       };
     } catch (err) {
+      console.log(err);
       if (err.name && err.name === 'ItemNotFoundException') return undefined;
       throw err;
     }

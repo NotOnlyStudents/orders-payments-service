@@ -88,6 +88,7 @@ Create a new order for the user requesting
               "string"
             ],
             "quantity": 0,
+            "discount": 0,
             "price": 0,
             "available": true,
             "evidence": true,
@@ -125,6 +126,7 @@ Create a new order for the user requesting
 |»»»»» description|body|string|false|none|
 |»»»»» images|body|[string]|false|none|
 |»»»»» quantity|body|integer(int32)|true|none|
+|»»»»» discount|body|integer(int32)|false|none|
 |»»»»» price|body|integer(int64)|true|none|
 |»»»»» available|body|boolean|false|none|
 |»»»»» evidence|body|boolean|false|none|
@@ -243,6 +245,7 @@ Return a list of orders filtered according to given parameters
           "string"
         ],
         "quantity": 0,
+        "discount": 0,
         "price": 0,
         "available": true,
         "evidence": true,
@@ -290,6 +293,7 @@ Status Code **200**
 |»» description|string|false|none|none|
 |»» images|[string]|false|none|none|
 |»» quantity|integer(int32)|true|none|none|
+|»» discount|integer(int32)|false|none|none|
 |»» price|integer(int64)|true|none|none|
 |»» available|boolean|false|none|none|
 |»» evidence|boolean|false|none|none|
@@ -386,6 +390,7 @@ Return an order by id
         "string"
       ],
       "quantity": 0,
+      "discount": 0,
       "price": 0,
       "available": true,
       "evidence": true,
@@ -430,6 +435,7 @@ Status Code **200**
 |»» description|string|false|none|none|
 |»» images|[string]|false|none|none|
 |»» quantity|integer(int32)|true|none|none|
+|»» discount|integer(int32)|false|none|none|
 |»» price|integer(int64)|true|none|none|
 |»» available|boolean|false|none|none|
 |»» evidence|boolean|false|none|none|
@@ -476,7 +482,7 @@ Set an order to fulfilled
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successfully updated the order status|None|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad status format or order could not be set to given status.|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad status format.|None|
 |401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Authorization information is missing or invalid.|None|
 |403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Only vendor can perform this action.|None|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|An order with the specified ID was not found.|None|

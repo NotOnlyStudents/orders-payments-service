@@ -24,6 +24,9 @@ class ProductWithDynamoAnnotations implements Product {
   available: boolean;
 
   @attribute()
+  discount: number;
+
+  @attribute()
   evidence: boolean;
 
   @attribute()
@@ -35,6 +38,7 @@ class ProductWithDynamoAnnotations implements Product {
     description: string = '',
     images: string[] = [],
     quantity: number = 0,
+    discount: number = 0,
     price: number = 0,
     available: boolean = false,
     evidence: boolean = false,
@@ -45,6 +49,7 @@ class ProductWithDynamoAnnotations implements Product {
     this.description = description;
     this.images = images;
     this.quantity = quantity;
+    this.discount = discount;
     this.price = price;
     this.available = available;
     this.evidence = evidence;
@@ -60,6 +65,7 @@ const annotate = (
     p.description,
     p.images,
     p.quantity,
+    p.discount,
     p.price,
     p.available,
     p.evidence,

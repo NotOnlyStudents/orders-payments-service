@@ -4,6 +4,7 @@ interface Product {
   description: string;
   images: string[];
   quantity: number;
+  discount: number;
   price: number;
   available: boolean;
   evidence: boolean;

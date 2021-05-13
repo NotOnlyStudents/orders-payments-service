@@ -52,7 +52,7 @@ const lambda = async (
 ): Promise<PaymentResponse> => {
   if (!(customerEmail && customerId && t) || !validateToken(t)) return new PaymentResponse(400);
   const payment = t.token.data.products
-    .reduce((prev, curr) => curr.quantity * curr.price + prev, 0);
+    .reduce((prev, curr) => (curr.quantity * curr.price * (1 - curr.discount / 100)) + prev, 0);
   const session = await sendOrderToStripe(payment);
   if (await repo.placeOrder(session.paymentIntent,
     addr,

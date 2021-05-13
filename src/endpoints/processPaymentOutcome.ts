@@ -17,7 +17,7 @@ import SNSConfig from 'src/models/SNSConfig';
 const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const dynamoConfig: ClientConfiguration = parseDocument(readFile(process.env.DYNAMODB_CONFIG_FILE_PATH, 'utf-8')).toJSON();
   const snsConfig: SNSConfig = parseDocument(readFile(process.env.SNS_CONFIG_FILE_PATH, 'utf-8')).toJSON();
-  const snsConnection = new SNSClient(snsConfig);
+  const snsConnection = new SNSClient({ region: snsConfig.region });
   const repo = new OrderRepositoryDynamoDB(new DynamoDB(dynamoConfig));
   let paymentEvent: PaymentEvent;
   try {

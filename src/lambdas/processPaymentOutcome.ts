@@ -15,6 +15,8 @@ const lambda = async (
   if (paymentEvent.type === PaymentStatus.success) {
     try {
       const snsInfo = await repo.moveToPayedOrders(paymentEvent.data.object.id);
+      console.log(`cart ${payedCartARN}, product ${productBoughtARN}`);
+      console.log(JSON.stringify(snsInfo));
       console.log(await sns.send(new PublishCommand({
         TopicArn: payedCartARN,
         Message: JSON.stringify({ cartId: snsInfo.cartId }),
@@ -28,6 +30,7 @@ const lambda = async (
         MessageDeduplicationId: uuid(),
       })));
     } catch (err) {
+      console.log(JSON.stringify(err));
       return new PaymentResponse(500);
     }
   }

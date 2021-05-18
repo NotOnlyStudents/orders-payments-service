@@ -10,6 +10,7 @@ const lambda = async (repo: OrderRepository, filter: OrderFilter, customerId: st
   for await (const order of queryResult) {
     orders.push(order);
   }
+  orders.sort((a, b) => b.date.getTime() - a.date.getTime());
   return new OrderResponse(200, orders);
 };
 export default lambda;

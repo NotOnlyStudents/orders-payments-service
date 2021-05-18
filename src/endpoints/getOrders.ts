@@ -18,8 +18,8 @@ const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGateway
   const userName = event.requestContext.authorizer.claims['cognito:username'] as string;
   const userGroups = event.requestContext.authorizer.claims['cognito:groups'] as string[];
   const filters: OrderFilter = { ...event.queryStringParameters };
-  if ('start' in filters) filters.start = new Date(filters.start)
-  if ('end' in filters) filters.end = new Date(filters.end)
+  if ('start' in filters) filters.start = new Date(filters.start);
+  if ('end' in filters) filters.end = new Date(filters.end);
   if (userGroups.includes('buyers')) return getOrders(repo, filters, userName);
   if (userGroups.includes('sellers')) return getOrders(repo, filters);
   return new OrderResponse(403);

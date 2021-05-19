@@ -34,8 +34,8 @@ async function sendOrderToStripe(
       },
       quantity: 1,
     }],
-    success_url: `${clientBaseUrl}/`,
-    cancel_url: `${clientBaseUrl}/`,
+    success_url: `${clientBaseUrl}/orders`,
+    cancel_url: `${clientBaseUrl}/cart/payment?payment_failure=true`,
   });
   return {
     sessionId: session.id,

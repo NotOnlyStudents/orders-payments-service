@@ -34,7 +34,7 @@ async function sendOrderToStripe(
       },
       quantity: 1,
     }],
-    success_url: `${clientBaseUrl}/orders`,
+    success_url: `${clientBaseUrl}/orders?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${clientBaseUrl}/cart/payment?payment_failure=true`,
   });
   return {

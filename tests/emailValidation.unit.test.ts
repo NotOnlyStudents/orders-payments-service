@@ -3,7 +3,7 @@ import { isFilter, OrderFilter } from '../src/models/OrderFilters';
 describe('Check the order filter', () => {
   test('Valid order email filter', () => {
     const filterEmail: OrderFilter = {
-      email: 'pippo.pluto@mail.com'
+      email: 'pippo.pluto@mail.com',
     };
 
     expect(isFilter(filterEmail)).toBeTruthy();
@@ -11,7 +11,7 @@ describe('Check the order filter', () => {
 
   test('Invalid email absent', () => {
     const filterEmail: OrderFilter = {
-      email: ''
+      email: '',
     };
 
     expect(isFilter(filterEmail)).toBeFalsy();
@@ -19,7 +19,7 @@ describe('Check the order filter', () => {
 
   test('Invalid email username too long', () => {
     const filterEmail: OrderFilter = {
-      email: 'pippo'.repeat(15) + '@mail.com'
+      email: `${'pippo'.repeat(15)}@mail.com`,
     };
 
     expect(isFilter(filterEmail)).toBeFalsy();
@@ -27,7 +27,7 @@ describe('Check the order filter', () => {
 
   test('Invalid email too long', () => {
     const filterEmail: OrderFilter = {
-      email: 'pippo.pluto.'.repeat(25) + '@mail.com'
+      email: `${'pippo.pluto.'.repeat(25)}@mail.com`,
     };
 
     expect(isFilter(filterEmail)).toBeFalsy();
@@ -35,7 +35,7 @@ describe('Check the order filter', () => {
 
   test('Invalid email domain parts too long', () => {
     const filterEmail: OrderFilter = {
-      email: 'pippo.pluto@' + 'mail'.repeat(16) + '.com'
+      email: `pippo.pluto@${'mail'.repeat(16)}.com`,
     };
 
     expect(isFilter(filterEmail)).toBeFalsy();

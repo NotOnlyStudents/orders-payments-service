@@ -5,7 +5,7 @@ import OrderResponse from '../src/models/OrderResponse';
 
 describe('Check the order response', () => {
   test('Valid order responses', () => {
-    const address: Address = { 
+    const address: Address = {
       id: '1',
       nation: 'Italia',
       city: 'Venezia',
@@ -28,7 +28,7 @@ describe('Check the order response', () => {
     };
 
     const orderResponse = new OrderResponse(200, order1);
-    const ordersResponse = new OrderResponse(200,[order1]);
+    const ordersResponse = new OrderResponse(200, [order1]);
     const errorOrderResponse = new OrderResponse(400);
 
     expect(orderResponse.statusCode).toStrictEqual(200);

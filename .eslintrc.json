@@ -28,6 +28,16 @@
       "ForInStatement",
       "LabeledStatement",
       "WithStatement"
+    ],
+    "no-console": [
+      "warn",
+      {
+        "allow": [
+          "info",
+          "warn",
+          "error"
+        ]
+      }
     ]
   }
 }

@@ -1,5 +1,5 @@
 module.exports = {
-  preset: '@shelf/jest-dynamodb',
+  // preset: '@shelf/jest-dynamodb',
   transform: {
     '^.+\\.tsx?$': 'ts-jest'
   },
